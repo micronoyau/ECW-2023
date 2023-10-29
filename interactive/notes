@@ -1,0 +1,131 @@
+8 registres génériques de 1 octet -> indexé sur 3 bits
+ip sur 2 octets
+
+r1,r2,r3,r4 = génériques
+r5:r6 = address pointer bis
+r7:r8 = address pointer
+
+FLAGS : [unused] [GT, 2bits] [LT, 2bits] [Z, 1bit]
+
+syscall :
+ + nr = r1. 2 = write, 1 = read
+ + param = addr pointer
+
+call instructions : [opcode = 00000]
+000 = nop
+001 = syscall
+010 = call
+011 = ret
+100 = xcg
+101,110,111 = unkown
+
+[opcode = 00001] => unkown
+
+[opcode = 00010] => flow control. saute à pointed addr + 1
+000 = unkown
+001 = jmp
+010 = jz
+011 = jnz
+100 = nop
+101 = nop
+110 = nop
+111 = nop
+
+
+shr r1, [shift]
+[opcode = 00011] [shift]
+
+shl r1, [shift]
+[opcode = 00100] [shift]
+
+not [reg]
+[opcode = 00101] [reg]
+
+or r1, [src reg]
+[opcode = 00110] [src reg]
+
+and r1, [src reg] :
+[opcode = 00111] [src reg]
+
+xor r1, [src reg] :
+[opcode = 01000] [src reg]
+
+sub r1, [src reg] :
+[opcode = 01001] [src reg]
+
+add r1, [src reg] :
+[opcode = 01010] [src reg]
+
+cmp r1, [reg] :
+[opcode = 01011] [reg]
+
+ld [dst reg] :
+[opcode = 01100] [dst reg]
+
+st [src reg]
+[opcode = 01101] [src reg]
+
+mov [dst reg], r1 :
+[opcode = 01110] [dst reg]
+
+mov r1, [src reg] :
+[opcode = 01111] [src reg]
+
+seti [dst reg], [val]
+[opcode = 1] [val] [dst register]
+-> erases MSB
+
+set immediate :
+[opcode=1] [4 bits] [register]
+Ex : set immediate 0xd in r2 :
+1 1101 001 = 1110 1001 = e9
+
+-------------
+
+Début programme
+f8 : s r1, 0xf
+24 : shl r1, 4
+f9 : s r2, 0xf
+31 : or r1, r2
+
+-------------
+
+Ex :
+b0 : si r1, 0x6
+24 : shl r1, 0x4
+d9 : si r2, 0xb
+c7 : si r8, 0x8
+31 : or r1, r2
+93 : si r4, 0x2
+f3 : si r4, 0xe
+f3 : si r4, 0xe
+fb : si r4, 0xf
+68 : st r1
+62 : ld r3
+59 : cmp r1, r2
+
+-------------
+
+b0 : si r1, 0x6
+24 : shl r1, 0x4
+d9 : si r2, 0xb
+31 : or r1, r2
+a4 : si r5, 0x4
+b5 : si r6, 0x6
+c6 : si r7, 0x8
+d7 : si r8, 0xa
+04 : xcg
+
+----------------
+
+b0 : si r1, 0x6
+24 : shl r1, 0x4
+d9 : si r2, 0xb
+31 : or r1, r2
+a4 : si r5, 0x4
+b5 : si r6, 0x6
+c6 : si r7, 0x8
+d7 : si r8, 0xa
+04 : xcg
+02 : call
+

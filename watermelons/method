@@ -1,0 +1,12 @@
+But : réécrire contenu pointé par watermelon_file (dans la heap, 32 bytes).
+Pour y écrire "flag.txt"
+-> Heap overflow, use after free ?
+Selectionner une fois enveloppe grande, puis petite.
+-> Il reste des octets en plus d'avant
+
+1) Buy
+addr gift = 0x55555555c2a0
+addr gift msg (32 bytes) = 0x55555555c2f0
+2) Show
+addr file = 0x55555555c2f0
+
